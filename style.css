@@ -1,0 +1,139 @@
+/* Fullscreen dark background */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #0a0a0a;
+    overflow: hidden;
+    color: white;
+}
+
+/* Canvas covers background */
+#neural-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* Chat container */
+.chat-container {
+    width: 80%;
+    max-width: 1000px;
+    height: 80vh;
+    margin: auto;
+    margin-top: 5vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: rgba(20, 20, 20, 0.92);
+    border-radius: 15px;
+    border: 2px solid #00f2ff33;
+    overflow: hidden;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* Hover glow */
+.chat-container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 40px #00f2ff88;
+}
+
+/* Chat box */
+.chat-box {
+    flex: 1;
+    padding: 15px;
+    list-style: none;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Bot messages (left) */
+.bot-msg {
+    align-self: flex-start;
+    background: rgba(0, 255, 200, 0.12);
+    border-left: 4px solid #00f2ff;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 60%;
+}
+
+/* User messages (right) */
+.user-msg {
+    align-self: flex-end;
+    background: rgba(255, 200, 0, 0.12);
+    border-right: 4px solid #ffc400;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 60%;
+}
+
+/* Input area */
+.input-area {
+    display: flex;
+    padding: 10px;
+    background: rgba(30, 30, 30, 0.95);
+    border-top: 2px solid #00f2ff33;
+}
+
+/* Input styling */
+input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #555;
+    background: #111;
+    color: white;
+    border-radius: 8px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+input:focus {
+    border-color: #00f2ff;
+}
+
+/* Button styling with blast effect */
+button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    background: #00f2ff;
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #00ddee;
+}
+
+/* Blast effect */
+button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s ease, height 0.5s ease;
+    z-index: 0;
+}
+
+button:active::after {
+    width: 300%;
+    height: 300%;
+}
+
+button span {
+    position: relative;
+    z-index: 1;
+}

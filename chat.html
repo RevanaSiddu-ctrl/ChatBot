@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Bot</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+      function sendMsg() {
+        const promptNode = document.getElementById('prompt');
+        const chatListNode = document.getElementById('convo');
+
+        // Show user message
+        let msgElement = document.createElement('li');
+        msgElement.classList.add('user-msg');
+        msgElement.innerHTML = promptNode.value;
+        chatListNode.appendChild(msgElement);
+
+        // Google API request
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("X-goog-api-key", "AIzaSyBiwq7f5OmBrtaEUyB9ZRNvNid0tZceyd8"); // Replace with your own key
+
+        const raw = JSON.stringify({
+          "contents": [
+            {
+              "parts": [
+                { "text": promptNode.value }
+              ]
+            }
+          ]
+        });
+
+        const requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: raw,
+          redirect: "follow"
+        };
+
+        fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent", requestOptions)
+          .then((response) => response.json())
+          .then((result) => {
+            let answer = result?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+            let botAns = document.createElement('li');
+            botAns.classList.add('bot-msg');
+            botAns.innerHTML = answer;
+            chatListNode.appendChild(botAns);
+
+            chatListNode.scrollTop = chatListNode.scrollHeight; // Auto-scroll
+          })
+          .catch((error) => console.error(error));
+
+        promptNode.value = ""; // Clear input
+      }
+    </script>
+</head>
+<body>
+  <!-- Neural network background -->
+  <canvas id="neural-bg"></canvas>
+
+  <div class="chat-container">
+    <center><h1 class="title">SUUYY!!</h1></center>
+    <ul id="convo" class="chat-box"></ul>
+    <div class="input-area">
+      <input type="text" id="prompt" placeholder="Type your message...">
+      <button id="send" onclick="sendMsg()">Ask</button>
+    </div>
+  </div>
+
+  <!-- Neural network animation script -->
+  <script>
+    const canvas = document.getElementById("neural-bg");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    for (let i = 0; i < 60; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "cyan";
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        particles.forEach((p2, j) => {
+          if (i !== j) {
+            let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+            if (dist < 150) {
+              ctx.strokeStyle = "rgba(0,255,255,0.2)";
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
+          }
+        });
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
+</body>
+</html>
+
+
